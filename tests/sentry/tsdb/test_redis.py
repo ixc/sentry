@@ -7,6 +7,7 @@ from datetime import (
     timedelta,
 )
 
+from django.conf import settings
 from sentry.testutils import TestCase
 from sentry.tsdb.base import TSDBModel, ONE_MINUTE, ONE_HOUR, ONE_DAY
 from sentry.tsdb.redis import RedisTSDB
@@ -14,9 +15,8 @@ from sentry.tsdb.redis import RedisTSDB
 
 class RedisTSDBTest(TestCase):
     def setUp(self):
-        self.db = RedisTSDB(hosts={
-            0: {'db': 9}
-        }, rollups=(
+        options = settings.SENTRY_REDIS_OPTIONS
+        self.db = RedisTSDB(hosts=options['hosts'], rollups=(
             # time in seconds, samples to keep
             (10, 30),  # 5 minutes at 10 seconds
             (ONE_MINUTE, 120),  # 2 hours at 1 minute
